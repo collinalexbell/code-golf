@@ -1,0 +1,74 @@
+/* -----------
+ * Description
+ * -----------
+ * The game of Yahtzee is played by rolling five 6-sided dice, and scoring the results in a number of ways.
+ * You are given a Yahtzee dice roll, represented as a sorted list of 5 integers, each of which is between 1 and 6 inclusive.
+ * Your task is to find the maximum possible score for this roll in the upper section of the Yahtzee score card.
+ * Here's what that means.
+ *
+ * For the purpose of this challenge, the upper section of Yahtzee gives you six possible ways to score a roll.
+ * 1 times the number of 1's in the roll, 2 times the number of 2's, 3 times the number of 3's, and so on up to 6 times the number of 6's.
+ * For instance, consider the roll [2, 3, 5, 5, 6].
+ * If you scored this as 1's, the score would be 0, since there are no 1's in the roll.
+ * If you scored it as 2's, the score would be 2, since there's one 2 in the roll.
+ * Scoring the roll in each of the six ways gives you the six possible scores:
+ *
+ * 0 2 3 0 10 6
+ * 
+ * The maximum here is 10 (2x5), so your result should be 10.
+ * Examples
+ *
+ * yahtzee_upper([2, 3, 5, 5, 6]) => 10
+ * yahtzee_upper([1, 1, 1, 1, 3]) => 4
+ * yahtzee_upper([1, 1, 1, 3, 3]) => 6
+ * yahtzee_upper([1, 2, 3, 4, 5]) => 5
+ * yahtzee_upper([6, 6, 6, 6, 6]) => 30
+ *
+ */
+
+#include <stdio.h>
+
+struct Score {
+  int score;
+  int dieVal;
+};
+
+struct Score yahtzee_upper(int* dice) {
+  int i, workingScore;
+  struct Score s;
+  int counts[6] = {0,0,0,0,0,0};
+
+  for (i=0; i<6; i++) {
+    counts[dice[i]-1] = counts[dice[i]-1] + 1;
+  }
+
+  s.score = 0;
+  s.dieVal = -1;
+
+  for (i=0; i<6; i++) {
+    workingScore = counts[i] * (i+1);
+    if(workingScore > s.score){
+      s.score = workingScore;
+      s.dieVal = i+1;
+    }
+  }
+  return s;
+}
+
+void printScore(struct Score s) {
+  printf("score: %d, dieValue: %d\n", s.score, s.dieVal);
+}
+
+int main() {
+  int i;
+  int dice[5][6] = {
+    {2,3,5,5,6},
+    {1,1,1,1,3},
+    {1,1,1,3,3},
+    {1,2,3,4,5},
+    {6,6,6,6,6}
+  };
+  for(i=0; i<5; i++) {
+    printScore(yahtzee_upper(dice[i]));
+  }
+}
